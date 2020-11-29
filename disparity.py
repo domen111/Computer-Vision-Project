@@ -21,91 +21,68 @@ def compute_disparity(imgL, imgR, values):
     imgL = downsample_image(imgL, 3)
     imgR = downsample_image(imgR, 3)
 
-    # numDisparities = cv.getTrackbarPos('numDisparities', 'disparity') * 16
-    # blockSize = cv.getTrackbarPos('blockSize', 'disparity') * 2 + 1
-    numDisparities = 64
-    blockSize = 15
-
     print(values)
-    stereo = cv.StereoBM_create(numDisparities=values['numDisparities'], \
-                                blockSize=values['blockSize'])
 
-    # win_size = 5
-    # min_disp = -1
-    # max_disp = 63 #min_disp * 9
-    # num_disp = max_disp - min_disp # Needs to be divisible by 16
+    # stereo = cv.StereoBM_create(numDisparities=values['numDisparities'], \
+    #                             blockSize=values['blockSize'])
 
-    # stereo = cv.StereoSGBM_create(minDisparity = min_disp,
-    #     numDisparities = num_disp,
-    #     blockSize = 31,
-    #     uniquenessRatio = 5,
-    #     speckleWindowSize = 5,
-    #     speckleRange = 5,
-    #     disp12MaxDiff = 5,
-    #     P1 = 8*3*win_size**2,#8*3*win_size**2,
-    #     P2 = 32*3*win_size**2) #32*3*win_size**2)
+    stereo = cv.StereoSGBM_create(
+            minDisparity = 0,
+            numDisparities = values['numDisparities'],
+            blockSize = values['blockSize'],
+            uniquenessRatio = values['uniquenessRatio'],
+            speckleWindowSize = values['speckleWindowSize'],
+            speckleRange = values['speckleRange'],
+            disp12MaxDiff = values['disp12MaxDiff'],
+            P1 = values['P1'],
+            P2 = values['P2'],
+        )
 
     disparity = stereo.compute(imgL, imgR)
     return disparity
-    # disparity[disparity > 0] = 0
-    cv.imwrite('images/disparity.png', disparity)
-    print(disparity)
-    # plt.imshow(imgL)
-    # plt.imshow(imgR)
-    cv.imshow('disparity', disparity)
-    cv.waitKey()
-    # plt.imshow(imgL,'gray')
-    # plt.imshow(imgR,'gray')
-    # disparity[disparity < 0] = disparity[disparity > 0].min()
-    # plt.imshow(disparity,'gray')
-    # plt.show()
-
-def trackerbar_event(val):
-    pass
 
 
-imgL = cv.imread('images/1129-1/l4.png', 0)
-imgR = cv.imread('images/1129-1/r4.png', 0)
-# imgL = cv.imread('images/im0.jpg', 0)
-# imgR = cv.imread('images/im1.jpg', 0)
-
-# cv.namedWindow('disparity', cv.WINDOW_AUTOSIZE | cv.WINDOW_GUI_EXPANDED)
-# cv.createTrackbar('numDisparities', 'disparity', 64 // 16, 200 // 16, trackerbar_event)
-# cv.createTrackbar('blockSize', 'disparity', 30 // 2, 100 // 2, trackerbar_event)
+imgL = cv.imread('images/1129-1/l4.png', cv.IMREAD_GRAYSCALE)
+imgR = cv.imread('images/1129-1/r4.png', cv.IMREAD_GRAYSCALE)
 
 fig = plt.figure()
 fig.canvas.mpl_connect('close_event', lambda e: sys.exit())
 ax = fig.add_subplot(111)
-fig.subplots_adjust(left=0.25, bottom=0.25)
-ax.imshow(imgL)
+fig.subplots_adjust(left=0.25, bottom=0.5)
+ax.imshow(cv.cvtColor(((imgL.astype(float) + imgR.astype(float)) / 2).astype('uint8'),
+                      cv.COLOR_GRAY2RGB))
 
 
 slider_vars = [
+    {'name': 'plotMinValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
+    {'name': 'plotMaxValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
     {'name': 'numDisparities', 'default': 64, 'min': 16, 'max': 160, 'step': 16},
     {'name': 'blockSize', 'default': 15, 'min': 1, 'max': 101, 'step': 2},
+    {'name': 'uniquenessRatio', 'default': 0, 'min': 0, 'max': 15, 'step': 1},
+    {'name': 'disp12MaxDiff', 'default': 0, 'min': 0, 'max': 50, 'step': 1},
+    {'name': 'speckleWindowSize', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
+    {'name': 'speckleRange', 'default': 0, 'min': 0, 'max': 15, 'step': 1},
+    {'name': 'P1', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
+    {'name': 'P2', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
 ]
 sliders_ax = []
 sliders = []
 for i, var in enumerate(slider_vars):
-    # _, ax = plt.subplots()
-    # plt.subplots_adjust(bottom=0.2,left=0.3)
-    # ax = plt.axes([0.25, 0.1, 1, 0.03]) if i == 0 else plt.axes()
-    slider_ax = fig.add_axes([0.25, 0.1 + i * 0.05, 0.65, 0.03])
+    slider_ax = fig.add_axes([0.25, 0.1 + (len(slider_vars) - i - 1) * 0.03, 0.65, 0.02])
     sliders_ax.append(sliders_ax)
     slider = Slider(slider_ax, var['name'], var['min'], var['max'], var['default'], valstep=var['step'])
     sliders.append(slider)
-# plt.show()
-plt.pause(3)
+# plt.pause(3)
 
-# h = plt.imshow(imgL, 'gray')
+last_value = dict()
 while True:
-    disparity = compute_disparity(imgL, imgR, \
-        {var['name']: sliders[i].val for i, var in enumerate(slider_vars)})
-    # disparity[disparity < 0] = disparity[disparity > 0].min()
-    # cv.imshow('disparity', disparity)
-    # disparity[disparity < 0] = disparity[disparity > 0].min()
-    ax.imshow(disparity)
-    # plt.draw()
-    plt.pause(1)
-    # time.sleep(5)
-    # cv.waitKey(500)
+    values = {var['name']: sliders[i].val for i, var in enumerate(slider_vars)}
+    if values != last_value:
+        last_value = values
+        disparity = compute_disparity(imgL, imgR, values)
+        if values['plotMinValue'] != -1:
+            disparity[disparity < values['plotMinValue']] = values['plotMinValue']
+        if values['plotMaxValue'] != -1:
+            disparity[disparity > values['plotMaxValue']] = values['plotMaxValue']
+        ax.imshow(disparity)
+    plt.pause(0.3)
