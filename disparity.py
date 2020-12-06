@@ -34,16 +34,16 @@ def compute_disparity(imgL, imgR, values):
             speckleWindowSize = values['speckleWindowSize'],
             speckleRange = values['speckleRange'],
             disp12MaxDiff = values['disp12MaxDiff'],
-            P1 = values['P1'],
-            P2 = values['P2'],
+            P1 = 8*values['blockSize']**2 if values['autoP1P2'] else values['P1'],
+            P2 = 32*values['blockSize']**2 if values['autoP1P2'] else values['P2'],
         )
 
     disparity = stereo.compute(imgL, imgR)
     return disparity
 
 
-imgL = cv.imread('images/1129-1/l4.png', cv.IMREAD_GRAYSCALE)
-imgR = cv.imread('images/1129-1/r4.png', cv.IMREAD_GRAYSCALE)
+imgL = cv.imread('images/1206/img0004l.png', cv.IMREAD_GRAYSCALE)
+imgR = cv.imread('images/1206/img0004r.png', cv.IMREAD_GRAYSCALE)
 
 fig = plt.figure()
 fig.canvas.mpl_connect('close_event', lambda e: sys.exit())
@@ -56,14 +56,16 @@ ax.imshow(cv.cvtColor(((imgL.astype(float) + imgR.astype(float)) / 2).astype('ui
 slider_vars = [
     {'name': 'plotMinValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
     {'name': 'plotMaxValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
+    {'name': 'swapLR', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
     {'name': 'numDisparities', 'default': 64, 'min': 16, 'max': 160, 'step': 16},
     {'name': 'blockSize', 'default': 15, 'min': 1, 'max': 101, 'step': 2},
     {'name': 'uniquenessRatio', 'default': 0, 'min': 0, 'max': 15, 'step': 1},
-    {'name': 'disp12MaxDiff', 'default': 0, 'min': 0, 'max': 50, 'step': 1},
+    {'name': 'disp12MaxDiff', 'default': 30, 'min': 0, 'max': 200, 'step': 1},
     {'name': 'speckleWindowSize', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
     {'name': 'speckleRange', 'default': 0, 'min': 0, 'max': 15, 'step': 1},
-    {'name': 'P1', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
-    {'name': 'P2', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
+    {'name': 'autoP1P2', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
+    {'name': 'P1', 'default': 0, 'min': 0, 'max': 500, 'step': 1},
+    {'name': 'P2', 'default': 0, 'min': 0, 'max': 500, 'step': 1},
 ]
 sliders_ax = []
 sliders = []
@@ -79,7 +81,8 @@ while True:
     values = {var['name']: sliders[i].val for i, var in enumerate(slider_vars)}
     if values != last_value:
         last_value = values
-        disparity = compute_disparity(imgL, imgR, values)
+        tmpL, tmpR = (imgR, imgL) if values['swapLR'] else (imgL, imgR)
+        disparity = compute_disparity(tmpL, tmpR, values)
         if values['plotMinValue'] != -1:
             disparity[disparity < values['plotMinValue']] = values['plotMinValue']
         if values['plotMaxValue'] != -1:
