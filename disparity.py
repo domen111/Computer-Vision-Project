@@ -43,6 +43,7 @@ def compute_disparity(imgL, imgR, values):
 
 
 imgL = cv.imread('images/1206-2/img0053l.png', cv.IMREAD_GRAYSCALE)
+imgL_color = cv.imread('images/1206-2/img0053l.png')
 imgR = cv.imread('images/1206-2/img0053r.png', cv.IMREAD_GRAYSCALE)
 
 fig = plt.figure()
@@ -84,7 +85,7 @@ while True:
         last_value = values
         tmpL, tmpR = (imgR, imgL) if values['swapLR'] else (imgL, imgR)
         if values['showImgL']:
-            ax.imshow(imgL, cmap='gray')
+            ax.imshow(cv.cvtColor(imgL_color, cv.COLOR_BGR2RGB))
         else:
             disparity = compute_disparity(tmpL, tmpR, values)
             if values['plotMinValue'] != -1:
