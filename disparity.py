@@ -41,10 +41,11 @@ def compute_disparity(imgL, imgR, values):
     disparity = stereo.compute(imgL, imgR)
     return disparity
 
-
-imgL = cv.imread('images/1206-2/img0053l.png', cv.IMREAD_GRAYSCALE)
-imgL_color = cv.imread('images/1206-2/img0053l.png')
-imgR = cv.imread('images/1206-2/img0053r.png', cv.IMREAD_GRAYSCALE)
+dir = 'images/1206-2'
+no = 56
+imgL = cv.imread(f'{dir}/img{no:04d}l.png', cv.IMREAD_GRAYSCALE)
+imgL_color = cv.imread(f'{dir}/img{no:04d}l.png')
+imgR = cv.imread(f'{dir}/img{no:04d}r.png', cv.IMREAD_GRAYSCALE)
 
 fig = plt.figure()
 fig.canvas.mpl_connect('close_event', lambda e: sys.exit())
@@ -57,7 +58,8 @@ ax.imshow(cv.cvtColor(((imgL.astype(float) + imgR.astype(float)) / 2).astype('ui
 slider_vars = [
     {'name': 'plotMinValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
     {'name': 'plotMaxValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
-    {'name': 'showImgL', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
+    {'name': 'imgType', 'default': 0, 'min': 0, 'max': 2, 'step': 1},
+    {'name': 'blurSize', 'default': 0, 'min': 0, 'max': 400, 'step': 1},
     {'name': 'swapLR', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
     {'name': 'numDisparities', 'default': 64, 'min': 16, 'max': 160, 'step': 16},
     {'name': 'blockSize', 'default': 3, 'min': 1, 'max': 101, 'step': 2},
@@ -84,13 +86,30 @@ while True:
     if values != last_value:
         last_value = values
         tmpL, tmpR = (imgR, imgL) if values['swapLR'] else (imgL, imgR)
-        if values['showImgL']:
-            ax.imshow(cv.cvtColor(imgL_color, cv.COLOR_BGR2RGB))
-        else:
+        imgType = values['imgType']
+        if imgType == 0:
             disparity = compute_disparity(tmpL, tmpR, values)
             if values['plotMinValue'] != -1:
                 disparity[disparity < values['plotMinValue']] = values['plotMinValue']
             if values['plotMaxValue'] != -1:
                 disparity[disparity > values['plotMaxValue']] = values['plotMaxValue']
             ax.imshow(disparity)
+        elif imgType == 1:
+            imgL_color_blur = cv.blur(imgL_color,(values['blurSize'],values['blurSize']),0)  if values['blurSize'] > 0 else imgL_color
+            hsv = cv.cvtColor(imgL_color, cv.COLOR_BGR2HSV)
+            rgb = cv.cvtColor(imgL_color_blur, cv.COLOR_BGR2RGB)
+            ax.imshow(rgb)
+        elif imgType == 2:
+            imgL_color_blur = cv.blur(imgL_color,(values['blurSize'],values['blurSize']),0) if values['blurSize'] > 0 else imgL_color
+            # tmp = np.expand_dims(np.mean(imgL_color_blur, axis=2), axis=2)
+            # tmp = np.sum(imgL_color_blur - np.concatenate((tmp, tmp, tmp), axis=2), axis=2)
+            hsv = cv.cvtColor(imgL_color_blur, cv.COLOR_BGR2HSV)
+            # hsv[hsv[:,:,2] < 10] = 0
+            res = hsv[:,:,1]
+            # ax.imshow(tmp)
+            if values['plotMinValue'] != -1:
+                res[res < values['plotMinValue']] = 0
+            if values['plotMaxValue'] != -1:
+                res[res > values['plotMaxValue']] = 0
+            ax.imshow(res)
     plt.pause(0.3)
