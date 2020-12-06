@@ -42,8 +42,8 @@ def compute_disparity(imgL, imgR, values):
     return disparity
 
 
-imgL = cv.imread('images/1206-2/img0043l.png', cv.IMREAD_GRAYSCALE)
-imgR = cv.imread('images/1206-2/img0043r.png', cv.IMREAD_GRAYSCALE)
+imgL = cv.imread('images/1206-2/img0053l.png', cv.IMREAD_GRAYSCALE)
+imgR = cv.imread('images/1206-2/img0053r.png', cv.IMREAD_GRAYSCALE)
 
 fig = plt.figure()
 fig.canvas.mpl_connect('close_event', lambda e: sys.exit())
@@ -56,6 +56,7 @@ ax.imshow(cv.cvtColor(((imgL.astype(float) + imgR.astype(float)) / 2).astype('ui
 slider_vars = [
     {'name': 'plotMinValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
     {'name': 'plotMaxValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
+    {'name': 'showImgL', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
     {'name': 'swapLR', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
     {'name': 'numDisparities', 'default': 64, 'min': 16, 'max': 160, 'step': 16},
     {'name': 'blockSize', 'default': 3, 'min': 1, 'max': 101, 'step': 2},
@@ -82,10 +83,13 @@ while True:
     if values != last_value:
         last_value = values
         tmpL, tmpR = (imgR, imgL) if values['swapLR'] else (imgL, imgR)
-        disparity = compute_disparity(tmpL, tmpR, values)
-        if values['plotMinValue'] != -1:
-            disparity[disparity < values['plotMinValue']] = values['plotMinValue']
-        if values['plotMaxValue'] != -1:
-            disparity[disparity > values['plotMaxValue']] = values['plotMaxValue']
-        ax.imshow(disparity)
+        if values['showImgL']:
+            ax.imshow(imgL, cmap='gray')
+        else:
+            disparity = compute_disparity(tmpL, tmpR, values)
+            if values['plotMinValue'] != -1:
+                disparity[disparity < values['plotMinValue']] = values['plotMinValue']
+            if values['plotMaxValue'] != -1:
+                disparity[disparity > values['plotMaxValue']] = values['plotMaxValue']
+            ax.imshow(disparity)
     plt.pause(0.3)
