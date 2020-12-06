@@ -42,8 +42,8 @@ def compute_disparity(imgL, imgR, values):
     return disparity
 
 
-imgL = cv.imread('images/1206/img0004l.png', cv.IMREAD_GRAYSCALE)
-imgR = cv.imread('images/1206/img0004r.png', cv.IMREAD_GRAYSCALE)
+imgL = cv.imread('images/1206-2/img0043l.png', cv.IMREAD_GRAYSCALE)
+imgR = cv.imread('images/1206-2/img0043r.png', cv.IMREAD_GRAYSCALE)
 
 fig = plt.figure()
 fig.canvas.mpl_connect('close_event', lambda e: sys.exit())
@@ -58,12 +58,12 @@ slider_vars = [
     {'name': 'plotMaxValue', 'default': -1, 'min': -1, 'max': 1000, 'step': 1},
     {'name': 'swapLR', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
     {'name': 'numDisparities', 'default': 64, 'min': 16, 'max': 160, 'step': 16},
-    {'name': 'blockSize', 'default': 15, 'min': 1, 'max': 101, 'step': 2},
+    {'name': 'blockSize', 'default': 3, 'min': 1, 'max': 101, 'step': 2},
     {'name': 'uniquenessRatio', 'default': 0, 'min': 0, 'max': 15, 'step': 1},
     {'name': 'disp12MaxDiff', 'default': 30, 'min': 0, 'max': 200, 'step': 1},
     {'name': 'speckleWindowSize', 'default': 0, 'min': 0, 'max': 100, 'step': 1},
     {'name': 'speckleRange', 'default': 0, 'min': 0, 'max': 15, 'step': 1},
-    {'name': 'autoP1P2', 'default': 0, 'min': 0, 'max': 1, 'step': 1},
+    {'name': 'autoP1P2', 'default': 1, 'min': 0, 'max': 1, 'step': 1},
     {'name': 'P1', 'default': 0, 'min': 0, 'max': 500, 'step': 1},
     {'name': 'P2', 'default': 0, 'min': 0, 'max': 500, 'step': 1},
 ]
