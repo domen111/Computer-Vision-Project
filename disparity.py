@@ -16,8 +16,6 @@ def compute_disparity(imgL, imgR, values):
     imgL = downsample_image(imgL, 3)
     imgR = downsample_image(imgR, 3)
 
-    print(values)
-
     # stereo = cv2.StereoBM_create(numDisparities=values['numDisparities'], \
     #                             blockSize=values['blockSize'])
 

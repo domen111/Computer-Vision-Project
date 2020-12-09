@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from matplotlib.widgets import Slider
 import sys
 
-dir = 'images/1206-2'
+dir = 'images/cube/original data'
 no = 149
 imgL = cv2.imread(f'{dir}/img{no:04d}l.png', cv2.IMREAD_GRAYSCALE)
 imgL_color = cv2.imread(f'{dir}/img{no:04d}l.png')
@@ -51,6 +51,7 @@ while True:
         tmpL, tmpR = (imgR, imgL) if values['swapLR'] else (imgL, imgR)
         imgType = values['imgType']
         if imgType == 0:
+            print(values)
             disparity = compute_disparity(tmpL, tmpR, values)
             if values['plotMinValue'] != -1:
                 disparity[disparity < values['plotMinValue']] = values['plotMinValue']
