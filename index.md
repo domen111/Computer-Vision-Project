@@ -88,7 +88,7 @@ Figure 5. The CNN structure
 The input data are normalized images, and the output data are their normalized quaternion values. There are three convolutional 2D layers in this structure, which can extract the features from images. And each convolutional layer is followed by the batch normalization to assist in training and a max-pooling 2D layer. Then, two fully connected layers are concatenated to infer the relationships between the features and the quaternion values. Lastly, a layer of 4 sigmoid activation functions is set as the output to generate the quaternion. The loss function is set as
 
 $$
-L=log(∑_(i=1)^N(y_i-y ̂_i )^2 )
+L=\log(\sum_{i=1}^N(y_i-y ̂_i )^2 )
 $$
 
 , where logarithm can magnify and distinguish small differences between loss values when the loss values become very small during training progress. We use Adam as the CNN training optimizer, and we only save the model parameters with the lowest training loss during training progress.
@@ -137,7 +137,7 @@ We think there are some possible reasons which cause the model of one-RGB-image-
 Secondly, the information offered by the image from the left camera may be enough to judge the object pose, so the disparity map cannot facilitate the prediction to perform better. And it even could become a distractor and offer noisy information during testing.
 Besides, the patterns of the cube might be too complicated for the model. We may need to use an object with plainer colors, and so it can show the advantages of using the disparity map.
 
-## Conclusion
+## V. Conclusion
 
 In this project, we used two webcams to build the RGBD vision system to achieve a cheaper solution, and utilized the CNN structure to predict the object pose based on the images from the vision system. After setting up the two-webcam system, we built the training dataset by using a Rubik's Cube and rotating with different angles and took photos for it. Then, we constructed a CNN model and compare the performance by using three different image type of inputs. After training the model based on the dataset, results show that by inputting only one RGB image, it is good and stable enough to predict the object pose in 3D space.
 
