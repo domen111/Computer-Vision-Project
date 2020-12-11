@@ -4,7 +4,10 @@ Object Pose Tracking in 3D Space by Using Two Webcams
 Do-Men Su, Bo-Hsun Chen
 
 ## Introduction
- 
+Estimating object pose is an important research in computer vision and can ben utilized in many application, and 
+
+
+The following parts of this report a
 
 [Project Proposal](./proposal.pdf)
 
@@ -83,28 +86,34 @@ For our dataset, we only collected 198 images and we did not rotate the object a
 
 Referencing the PoseCNN structure in [1], we build our CNN structure as the following figure.
 
-![Figure X. The CNN structure](https://i.imgur.com/EnbZ499.png)
+![](https://i.imgur.com/EnbZ499.png)  
+Figure 5. The CNN structure
 
 The input data are normalized images, and the output data are their normalized quaternion values. There are three convolutional 2D layers in this structure, which can extract the features from images. And each convolutional layer is followed by the batch normalization to assist in training and a max-pooling 2D layer. Then, two fully connected layers are concatenated to infer the relationships between the features and the quaternion values. Lastly, a layer of 4 sigmoid activation functions is set as the output to generate the quaternion. The loss function is set as
 
-![log( sum( ( y_i - y_hat_i )^2, i = 1 to N ) )](https://i.imgur.com/vnaCtZ0.png)
+$$
+L=log(∑_(i=1)^N(y_i-y ̂_i )^2 )
+$$
 
 , where logarithm can magnify and distinguish small differences between loss values when the loss values become very small during training progress. We use Adam as the CNN training optimizer, and we only save the model parameters with the lowest training loss during training progress.
 
 To compare the performance of our idea, we input three different types of images to create three different types of models. The first one is inputting only the RGB image with 3 channels from the left camera, the second one is inputting the RGB image from the left camera as well as the disparity map with total 4 channels, and the last one is inputting two RGB images from the two cameras with total 6 channels. We compare the training progress of the three different models. The results and the table of final training and validation losses are shown as follows.
 
-![Figure 2. training progresses of three models](https://i.imgur.com/v8T5rq6.png)
+![](https://i.imgur.com/v8T5rq6.png)  
+Figure 6: Prediction results of model with two-image-input
 
 |                     | RGB      | RGB-D    | RGB-RGB | 
 | ------------------- | -------- | -------- | ------- |
 | final training loss | -4.5035  | -4.5839  | **-4.6329** |
 |  final valid loss   | -4.7390  | -4.7038  | **-4.9640** |
+Table 1: Training and validation loss
 
 The training progresses show that all the three models of different input image types are trainable since their training losses decrease as the epoch numbers grow. Besides from the table, the CNN model of two-RGB-image-input has the lowest final training and validation loss, indicating it may perform best. On the other hand, the model of RGBD-input has the highest validation loss, indicating that it may not be better than the model of only inputting an RGB image.
 
 Since the model of two-RGB-image-input has the best indexes in this stage, we apply it on some randomly chosen validation data, and compare the plotted arrows of predicted axes and original label axes by visualization to judge its performance on predicting object pose. The following figure shows the prediction results.
 
-![prediction results of model with two-image-input](https://i.imgur.com/6ELVoxS.jpg)
+![](https://i.imgur.com/6ELVoxS.jpg)  
+Figure 7: Prediction results of model with two-image-input
 
 The images above are using the left images from the two paired images of each validation data for visualization. And, the figure shows that for some images, like (b), (d), and (e), the model can predict the object pose very well and make the generated arrows align to the original ones. For some images, like (a) and (i), they have some degree biases between the corresponding arrows, indicating not predicting well. While for some images, like (f), it predicts totally wrong pose of the object.
 
