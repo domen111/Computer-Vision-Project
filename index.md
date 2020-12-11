@@ -3,6 +3,10 @@ Object Pose Tracking in 3D Space by Using Two Webcams
 
 Do-Men Su, Bo-Hsun Chen
 
+[Project Proposal](./proposal.pdf)
+
+[Project Presentation](./presentation.pdf)
+
 ## I. Introduction
 Estimating object pose is an important research in computer vision and can ben utilized in many application, and some research papers proposed state-of-the-art algorithms to detect object orientation pose by using RGBD data, which are listed in the website [1].
 
@@ -11,10 +15,6 @@ Finn et al. [2] addressed the RGB images by using a deep auto-encoder (DAE) comp
 However, these RGBD cameras, like Kinect v2 which has been off-produced, are too expensive or hard for ordinary people to access. And, objects in these existing training datasets are not the same as the objects to recognize in tasks. So, we proposed a cheaper way to build 3D visions and the dataset of the target object, and achieve tracking the pose of the target object in 3D space by using two webcams and based on CNN structure.
 
 The following parts of this report are as follows. Section II describes our motivation of this project, Section III shows our approaches in this project, including experiment setup, building the training dataset, building the disparity map based on two webcams, and the CNN structure and validation. Section IV demonstrates the experiment results and Section V concludes this report.
-
-[Project Proposal](./proposal.pdf)
-
-[Project Presentation](./presentation.pdf)
 
 ## II. Motivation
 Object pose estimation in real time is an important technique in computer vision, and it can be applied in many fields. Such helpful information can facilitate many attractive ongoing researches, such as a robotic arm needs to see and judge an object precisely, so it can properly catch and grasp it. And, self-driving cars should estimate poses of pedestrians, other cars, or barriers on the street, so it can avoid them and safely drive on the road. 
