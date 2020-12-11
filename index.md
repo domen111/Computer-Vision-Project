@@ -140,3 +140,6 @@ However, this project has much more space to improve. Firstly, we can add the fu
 
 ## References
 \[1\] Y. Xiang, T. Schmidt, V. Narayanan, and D. Fox, "PoseCNN: A Convolutional Neural Network for 6D Object Pose Estimation in Cluttered Scenes," arXiv:1711.00199v3, 2018.
+
+
+{% include lib/mathjax.html %}
