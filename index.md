@@ -10,9 +10,9 @@ Do-Men Su, Bo-Hsun Chen
 [Project Presentation](./presentation.pdf)
 
 ## II. Motivation
-Object pose estimation in real time is an important technique in computer vision, and it can be applied in many fields. Such helpful information can facilitate many attractive ongoing researches, such as a robotic arm needs to see and judge an object precisely, so it can properly catch and grasp it. And, a self-driving cars should estimate poses of pedestrians, other cars, or barriers on the street, so it can avoid them and safely drive on the road. 
+Object pose estimation in real time is an important technique in computer vision, and it can be applied in many fields. Such helpful information can facilitate many attractive ongoing researches, such as a robotic arm needs to see and judge an object precisely, so it can properly catch and grasp it. And, self-driving cars should estimate poses of pedestrians, other cars, or barriers on the street, so it can avoid them and safely drive on the road. 
 
-To estimate the object pose in 3D space, we need more than an RGB picture. However, many current research used RGB-D or point-cloud cameras, which are expensive and hard to access for ordinary people. So in this project, we try to build a custom-made RGB-D vision system composed of two easily-accessible commercial 2D webcams. And then, we try to estimate the object pose based on the images from our RGB-D vision system, so we can achieve a cheaper soluion. 
+To estimate the object pose in 3D space, we need more than an RGB picture. However, many current research used RGB-D or point-cloud cameras, which are expensive and hard to access for ordinary people. So in this project, we try to build a custom-made RGB-D vision system composed of two easily-accessible commercial 2D webcams. And then, we try to estimate the object pose based on the images from our RGB-D vision system, so we can achieve a cheaper solution. 
 
 
 
@@ -22,19 +22,19 @@ To conduct our experiment, we first used OpenCV to take two images simultaneousl
 
 Besides training the neural network model, we additionally recorded a stereo video as the testing data. In the video, we move our object around with different poses. Therefore, we utilized a histogram-based tracker and the neural network model to show the pose and position of the object in the video.
 
-### A. Experiment Setup
+### A. *Experiment Setup*
 
 Our experiment setup is shown in figure 1. We tied two Logitech C310 webcams together and put them on a camera tripod. The object for our experiment was a magic cube, which was put on a black carton box.
 
-The background was covered with a black piece of paper originally. This approach made it easier to remove the background since we only needed to erase the black parts of the images. However, when building the dataset, we found that such background caused the magic cube overexposed. Therefore, the setup shown in figure 1 used a white background instead.
+The background was covered with black paper originally. This approach made it easier to remove the background since we only needed to erase the black parts of the images. However, when building the dataset, we found that such background caused the magic cube overexposed. Therefore, the setup shown in figure 1 used a white background instead.
 
 ![](https://i.imgur.com/U2plG6q.png)  
 Figure 1: Experiment setup
 
 
-### B. Building Datasets
+### B. *Building Datasets*
 
-To build the training data, we manually rotated the magic cube on the carton box through both Y and Z axes. As shown in figure 2, X axis pointed out of the paper, Y axis pointed to the right, and Z axis pointed upwards. The animation of figure 3 shows that we rotated the magic cube through Z axis for a round; lift it up (rotation through Y axis) and rotated it through Z axis for another round again. As a result, we took 197 paired pictures in total as our dataset.
+To build the training data, we manually rotated the magic cube on the carton box through both Y and Z axes. As shown in figure 2, Xaxis pointed out of the paper, Y-axis pointed to the right, and Z-axis pointed upwards. The animation of figure 3 shows that we rotated the magic cube through Z-axis for a round; lift it up (rotation through Y-axis) and rotated it through Z-axis for another round again. As a result, we took 197 paired pictures in total as our dataset.
 
 ![](https://i.imgur.com/HBIWZwH.png)  
 Figure 2: The three axes used to build the dataset
@@ -43,7 +43,7 @@ Figure 2: The three axes used to build the dataset
 Figure 3: The animation of rotating the magic cube through Z axis
 
 
-### C. Building Disparity and Depth Maps with Two Webcams
+### *C. Building Disparity and Depth Maps with Two Webcams*
 
 To generate the RGB-D images from the paired RGB images, we needed some algorithms to generate the depth maps. Therefore, OpenCV functions are utilized to process the paired images. To generate the depth maps in OpenCV, we needed the following steps. The first is to generate the disparity maps. And, secondly, we needed to calibrate the cameras in order to compute the depth maps from the disparity maps. To calibrate our webcams, we originally used `checkerboardPattern.pdf` from Matlab.
 
@@ -74,9 +74,9 @@ Listing 1: The parameters used for `StereoSGBM_create`
 - The rest of the variables control the smoothness of the comparison and we set them to a suggested value in the OpenCV document.
 
 
-### D. CNN Structure
+### D. *CNN Structure*
 
-We use convolutional neural network (CNN) model to infer the relationship between input images and the object orientation. There are multiple ways to represent object orientations, including rotation matrix, Euler angle, and quaternion. Since rotation matrix has 9 paramters with many constraints (orthonormal matrix), and Euler angles has the singularity problem, we use the quaternions, which use four numbers to represent the object pose, with Euclidean norm equaling to 1 as the only constraint.
+We use convolutional neural network (CNN) model to infer the relationship between input images and the object orientation. There are multiple ways to represent object orientations, including rotation matrix, Euler angle, and quaternion. Since rotation matrix has 9 parameters with many constraints (orthonormal matrix), and Euler angles have the singularity problem, we use the quaternions, which use four numbers to represent the object pose, with Euclidean norm equaling to 1 as the only constraint.
 
 For our dataset, we only collected 198 images and we did not rotate the object along the X-axis of the global frame. But, since we have aligned the camera frame to the global frame, the effect of rotating the image (along the X-axis of the camera frame) is almost equivalent to rotating the object along the X-axis of the global frame. So, we augment our dataset by rotating each original image in the dataset by specific angles (20, 40, ..., 340 deg), and then we can get 18 times larger data set.
 
@@ -130,7 +130,7 @@ model of two-RGB-image-input:
 
 These videos show that the model of one-RGB-image-input performs best. Most of its X-axis arrows were steadily attached perpendicular to the cube’s front face with its Y and Z-axes arrows lying on the front face the cube and pointing to the correct directions, indicating the model predicts the object pose well. While for the other two models, the arrows vibrate severely, and sometimes randomly point to totally wrong directions.
 
-### A. Discussion
+### A. *Discussion*
 
 We think there are some possible reasons which cause the model of one-RGB-image-input is better and more stable than the models of RGBD-input and two-RGB-image-input. Firstly, we trained our model under a relatively pure environment by placing the cube right in the center of the two cameras, while the cube moved a large lateral displacement in the testing video. So, the images from the right camera in the testing video might become noises and lower the model performance of two-RGB-image-input, since the cross section of the cube caught by the right camera after large displacement could not align that from the left camera as well as in the training data set.
 
