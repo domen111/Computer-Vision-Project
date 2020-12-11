@@ -3,25 +3,26 @@ Object Pose Tracking in 3D Space by Using Two Webcams
 
 Do-Men Su, Bo-Hsun Chen
 
-
-## Motivation
-Object pose estimation in real time is an important technique in computer vision, and it can be applied in many fields. Such helpful information can facilitate many attractive ongoing researches, such as a robotic arm needs to see and judge an object precisely, so it can properly catch and grasp it. And, a self-driving cars should estimate poses of pedestrians, other cars, or barriers on the street, so it can avoid them and safely drive on the road. 
-
-To estimate the object pose in 3D space, we need more than an RGB picture. However, many current research used RGB-D or point-cloud cameras, which are expensive and hard to access for ordinary people. So in this project, we try to build a custom-made RGB-D vision system composed of two easily-accessible commercial 2D webcams. And then, we try to estimate the object pose based on the images from our RGB-D vision system, so we can achieve a cheaper soluion. 
+## I. Introduction
 
 [Project Proposal](./proposal.pdf)
 
 [Project Presentation](./presentation.pdf)
 
+## II. Motivation
+Object pose estimation in real time is an important technique in computer vision, and it can be applied in many fields. Such helpful information can facilitate many attractive ongoing researches, such as a robotic arm needs to see and judge an object precisely, so it can properly catch and grasp it. And, a self-driving cars should estimate poses of pedestrians, other cars, or barriers on the street, so it can avoid them and safely drive on the road. 
+
+To estimate the object pose in 3D space, we need more than an RGB picture. However, many current research used RGB-D or point-cloud cameras, which are expensive and hard to access for ordinary people. So in this project, we try to build a custom-made RGB-D vision system composed of two easily-accessible commercial 2D webcams. And then, we try to estimate the object pose based on the images from our RGB-D vision system, so we can achieve a cheaper soluion. 
 
 
-## Approaches
+
+## III. Approaches
 
 To conduct our experiment, we first used OpenCV to take two images simultaneously from the webcams. After having multiple paired stereo images, OpenCV functions were used to generate the corresponding disparity maps. And finally, we trained the neural network models with the RGB images and the disparity maps.
 
 Besides training the neural network model, we additionally recorded a stereo video as the testing data. In the video, we move our object around with different poses. Therefore, we utilized a histogram-based tracker and the neural network model to show the pose and position of the object in the video.
 
-### Experiment Setup
+### A. Experiment Setup
 
 Our experiment setup is shown in figure 1. We tied two Logitech C310 webcams together and put them on a camera tripod. The object for our experiment was a magic cube, which was put on a black carton box.
 
@@ -31,7 +32,7 @@ The background was covered with a black piece of paper originally. This approach
 Figure 1: Experiment setup
 
 
-### Building Datasets
+### B. Building Datasets
 
 To build the training data, we manually rotated the magic cube on the carton box through both Y and Z axes. As shown in figure 2, X axis pointed out of the paper, Y axis pointed to the right, and Z axis pointed upwards. The animation of figure 3 shows that we rotated the magic cube through Z axis for a round; lift it up (rotation through Y axis) and rotated it through Z axis for another round again. As a result, we took 197 paired pictures in total as our dataset.
 
@@ -42,7 +43,7 @@ Figure 2: The three axes used to build the dataset
 Figure 3: The animation of rotating the magic cube through Z axis
 
 
-### Building Disparity and Depth Maps with Two Webcams
+### C. Building Disparity and Depth Maps with Two Webcams
 
 To generate the RGB-D images from the paired RGB images, we needed some algorithms to generate the depth maps. Therefore, OpenCV functions are utilized to process the paired images. To generate the depth maps in OpenCV, we needed the following steps. The first is to generate the disparity maps. And, secondly, we needed to calibrate the cameras in order to compute the depth maps from the disparity maps. To calibrate our webcams, we originally used `checkerboardPattern.pdf` from Matlab.
 
@@ -73,7 +74,7 @@ Listing 1: The parameters used for `StereoSGBM_create`
 - The rest of the variables control the smoothness of the comparison and we set them to a suggested value in the OpenCV document.
 
 
-### CNN Structure
+### D. CNN Structure
 
 We use convolutional neural network (CNN) model to infer the relationship between input images and the object orientation. There are multiple ways to represent object orientations, including rotation matrix, Euler angle, and quaternion. Since rotation matrix has 9 paramters with many constraints (orthonormal matrix), and Euler angles has the singularity problem, we use the quaternions, which use four numbers to represent the object pose, with Euclidean norm equaling to 1 as the only constraint.
 
@@ -115,21 +116,21 @@ The images above are using the left images from the two paired images of each va
 
 So, the model could be not stable.
 
-## Test on Video: Result
+## IV. Test on Video: Result
 Finally, we compare the three models by applying them on a series of recorded images. In the beginning of the video, the cube was placed on the black podium with its X, Y, and Z-axis of its body-fixed frame right along the directions pointing out (X-axis of the global frame), left (Y-axis of the global frame), and up (Z-axis of the global frame) of the images. Then, we took the cube out and arbitrarily rotated and moved it in the scene for a duration of time. And then, the models should predict the object poses by plotting the colored arrows (red arrow for X-axis, green arrow for Y-axis, and blue arrow for Z-axis) in correct directions. The following videos show the testing results.
 
 model of one-RGB-image-input:
-https://drive.google.com/file/d/1uZhYTz5cEHzECFc94DMwRKBaaMD4e4ii/view?usp=sharing
+<iframe src="https://drive.google.com/file/d/1uZhYTz5cEHzECFc94DMwRKBaaMD4e4ii/preview" width="640" height="480"></iframe>
 
 model of RGBD-input:
-https://drive.google.com/file/d/1lsD0sH9KeJC8ZzKpUTkOqrb_jngJZEbD/view?usp=sharing
+<iframe src="https://drive.google.com/file/d/1lsD0sH9KeJC8ZzKpUTkOqrb_jngJZEbD/preview" width="640" height="480"></iframe>
 
 model of two-RGB-image-input:
-https://drive.google.com/file/d/1p9Jdv8JFcTpLyByrP9wgYnTrIoBMBlzT/view?usp=sharing
+<iframe src="https://drive.google.com/file/d/1p9Jdv8JFcTpLyByrP9wgYnTrIoBMBlzT/preview" width="640" height="480"></iframe>
 
 These videos show that the model of one-RGB-image-input performs best. Most of its X-axis arrows were steadily attached perpendicular to the cube’s front face with its Y and Z-axes arrows lying on the front face the cube and pointing to the correct directions, indicating the model predicts the object pose well. While for the other two models, the arrows vibrate severely, and sometimes randomly point to totally wrong directions.
 
-### Discussion
+### A. Discussion
 
 We think there are some possible reasons which cause the model of one-RGB-image-input is better and more stable than the models of RGBD-input and two-RGB-image-input. Firstly, we trained our model under a relatively pure environment by placing the cube right in the center of the two cameras, while the cube moved a large lateral displacement in the testing video. So, the images from the right camera in the testing video might become noises and lower the model performance of two-RGB-image-input, since the cross section of the cube caught by the right camera after large displacement could not align that from the left camera as well as in the training data set.
 
