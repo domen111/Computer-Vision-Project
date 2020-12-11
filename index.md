@@ -120,13 +120,13 @@ So, the model could be not stable.
 Finally, we compare the three models by applying them on a series of recorded images. In the beginning of the video, the cube was placed on the black podium with its X, Y, and Z-axis of its body-fixed frame right along the directions pointing out (X-axis of the global frame), left (Y-axis of the global frame), and up (Z-axis of the global frame) of the images. Then, we took the cube out and arbitrarily rotated and moved it in the scene for a duration of time. And then, the models should predict the object poses by plotting the colored arrows (red arrow for X-axis, green arrow for Y-axis, and blue arrow for Z-axis) in correct directions. The following videos show the testing results.
 
 model of one-RGB-image-input:
-<iframe src="https://drive.google.com/file/d/1uZhYTz5cEHzECFc94DMwRKBaaMD4e4ii/preview" width="640" height="480"></iframe>
+<iframe src="https://drive.google.com/file/d/1uZhYTz5cEHzECFc94DMwRKBaaMD4e4ii/preview" width="500" height="225"></iframe>
 
 model of RGBD-input:
-<iframe src="https://drive.google.com/file/d/1lsD0sH9KeJC8ZzKpUTkOqrb_jngJZEbD/preview" width="640" height="480"></iframe>
+<iframe src="https://drive.google.com/file/d/1lsD0sH9KeJC8ZzKpUTkOqrb_jngJZEbD/preview" width="500" height="225"></iframe>
 
 model of two-RGB-image-input:
-<iframe src="https://drive.google.com/file/d/1p9Jdv8JFcTpLyByrP9wgYnTrIoBMBlzT/preview" width="640" height="480"></iframe>
+<iframe src="https://drive.google.com/file/d/1p9Jdv8JFcTpLyByrP9wgYnTrIoBMBlzT/preview" width="500" height="225"></iframe>
 
 These videos show that the model of one-RGB-image-input performs best. Most of its X-axis arrows were steadily attached perpendicular to the cube’s front face with its Y and Z-axes arrows lying on the front face the cube and pointing to the correct directions, indicating the model predicts the object pose well. While for the other two models, the arrows vibrate severely, and sometimes randomly point to totally wrong directions.
 
