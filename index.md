@@ -94,7 +94,7 @@ We use convolutional neural network (CNN) model to infer the relationship betwee
 
 For our dataset, we only collected 198 images and we did not rotate the object along the X-axis of the global frame. But, since we have aligned the camera frame to the global frame, the effect of rotating the image (along the X-axis of the camera frame) is almost equivalent to rotating the object along the X-axis of the global frame. So, we augment our dataset by rotating each original image in the dataset by specific angles (20, 40, ..., 340 deg), and then we can get 18 times larger data set.
 
-Referencing the PoseCNN structure in [1], we build our CNN structure as the following figure.
+Referencing the PoseCNN structure in \[3\], we build our CNN structure as the following figure.
 
 ![](https://i.imgur.com/EnbZ499.png)  
 Figure 6. The CNN structure
