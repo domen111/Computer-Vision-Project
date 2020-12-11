@@ -3,20 +3,15 @@ Object Pose Tracking in 3D Space by Using Two Webcams
 
 Do-Men Su, Bo-Hsun Chen
 
-## Introduction
-Estimating object pose is an important research in computer vision and can ben utilized in many application, and 
-
-
-The following parts of this report a
-
-[Project Proposal](./proposal.pdf)
-
-[Project Presentation](./presentation.pdf)
 
 ## Motivation
 Object pose estimation in real time is an important technique in computer vision, and it can be applied in many fields. Such helpful information can facilitate many attractive ongoing researches, such as a robotic arm needs to see and judge an object precisely, so it can properly catch and grasp it. And, a self-driving cars should estimate poses of pedestrians, other cars, or barriers on the street, so it can avoid them and safely drive on the road. 
 
 To estimate the object pose in 3D space, we need more than an RGB picture. However, many current research used RGB-D or point-cloud cameras, which are expensive and hard to access for ordinary people. So in this project, we try to build a custom-made RGB-D vision system composed of two easily-accessible commercial 2D webcams. And then, we try to estimate the object pose based on the images from our RGB-D vision system, so we can achieve a cheaper soluion. 
+
+[Project Proposal](./proposal.pdf)
+
+[Project Presentation](./presentation.pdf)
 
 
 
