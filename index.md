@@ -101,6 +101,7 @@ Figure 6: Prediction results of model with two-image-input
 | ------------------- | -------- | -------- | ------- |
 | final training loss | -4.5035  | -4.5839  | **-4.6329** |
 |  final valid loss   | -4.7390  | -4.7038  | **-4.9640** |
+
 Table 1: Training and validation loss
 
 The training progresses show that all the three models of different input image types are trainable since their training losses decrease as the epoch numbers grow. Besides from the table, the CNN model of two-RGB-image-input has the lowest final training and validation loss, indicating it may perform best. On the other hand, the model of RGBD-input has the highest validation loss, indicating that it may not be better than the model of only inputting an RGB image.
