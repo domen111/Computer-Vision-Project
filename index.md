@@ -35,7 +35,7 @@ Our experiment setup is shown in figure 1. We tied two Logitech C310 webcams tog
 
 The background was covered with black paper originally. This approach made it easier to remove the background since we only needed to erase the black parts of the images. However, when building the dataset, we found that such background caused the magic cube overexposed. Besides, the white balance and exposure time of our webcam module were measured automatically and cannot be controlled by OpenCV. Therefore, the setup shown in figure 1 used a white background instead. Such background made the automatically measured white balance and exposure time consistent throughout the experiment.
 
-![](https://i.imgur.com/U2plG6q.png)  
+![](images/U2plG6q.png)  
 Figure 1: Experiment setup
 
 
@@ -43,10 +43,10 @@ Figure 1: Experiment setup
 
 To build the training data, we manually rotated the magic cube on the carton box through both Y and Z axes. As shown in figure 2, X-axis pointed out of the paper, Y-axis pointed to the right, and Z-axis pointed upwards. The animation of figure 3 shows that we rotated the magic cube through Z-axis for a round; lift it up (rotation through Y-axis) and rotated it through Z-axis for another round again. As a result, we took 197 paired pictures in total as our dataset.
 
-![](https://i.imgur.com/HBIWZwH.png)  
+![](images/HBIWZwH.png)  
 Figure 2: The three axes used to build the dataset
 
-![](https://i.imgur.com/Tp2c9ii.gif)  
+![](images/Tp2c9ii.gif)  
 Figure 3: The animation of rotating the magic cube through Z axis
 
 
@@ -58,7 +58,7 @@ As told in the class, the relationship of the disparity ($$d$$) and the depth ($
 
 The algorithm chosen to compute the disparity is Semi-Global Block Matching (SGBM). Using a block-based approach, the algorithm estimates the disparity from the left and the right images. This algorithm is implemented in OpenCV as `cv2.StereoSGBM_create`. To achieve a satisfactory result, we needed to tune a few parameters in the function. To help ourselves tunning the parameter, we built an instant GUI previewer (figure 4) of the disparity map, and listing 1 shows parameters chosen in our experiment.
 
-![](https://i.imgur.com/7MMhzjb.png)  
+![](images/7MMhzjb.png)  
 Figure 4: The GUI disparity preview tool
 
 
@@ -84,7 +84,7 @@ The meaning of the parameters and how we chose them are explained below:
 
 
 
-![](https://i.imgur.com/bMTgtUq.png)  
+![](images/bMTgtUq.png)  
 Figure 5: The RGB image and the disparity map
 
 
@@ -96,7 +96,7 @@ For our dataset, we only collected 198 images and we did not rotate the object a
 
 Referencing the PoseCNN structure in \[3\], we build our CNN structure as the following figure.
 
-![](https://i.imgur.com/EnbZ499.png)  
+![](images/EnbZ499.png)  
 Figure 6. The CNN structure
 
 The input data are normalized images, and the output data are their normalized quaternion values. There are three convolutional 2D layers in this structure, which can extract the features from images. And each convolutional layer is followed by the batch normalization to assist in training and a max-pooling 2D layer. Then, two fully connected layers are concatenated to infer the relationships between the features and the quaternion values. Lastly, a layer of 4 sigmoid activation functions is set as the output to generate the quaternion. The loss function is set as
@@ -109,7 +109,7 @@ $$
 
 To compare the performance of our idea, we input three different types of images to create three different types of models. The first one is inputting only the RGB image with 3 channels from the left camera, the second one is inputting the RGB image from the left camera as well as the disparity map with total 4 channels, and the last one is inputting two RGB images from the two cameras with total 6 channels. We compare the training progress of the three different models. The results and the table of final training and validation losses are shown as follows.
 
-![](https://i.imgur.com/v8T5rq6.png)  
+![](images/v8T5rq6.png)  
 Figure 7: Prediction results of model with two-image-input
 
 |                     | RGB      | RGB-D    | RGB-RGB | 
@@ -123,7 +123,7 @@ The training progresses show that all the three models of different input image 
 
 Since the model of two-RGB-image-input has the best indexes in this stage, we apply it on some randomly chosen validation data, and compare the plotted arrows of predicted axes and original label axes by visualization to judge its performance on predicting object pose. The following figure shows the prediction results.
 
-![](https://i.imgur.com/6ELVoxS.jpg)  
+![](images/6ELVoxS.jpg)  
 Figure 8: Prediction results of model with two-image-input
 
 The images above are using the left images from the two paired images of each validation data for visualization. And, the figure shows that for some images, like (b), (d), and (e), the model can predict the object pose very well and make the generated arrows align to the original ones. For some images, like (a) and (i), they have some degree biases between the corresponding arrows, indicating not predicting well. While for some images, like (f), it predicts totally wrong pose of the object.
